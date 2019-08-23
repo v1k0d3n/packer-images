@@ -1,0 +1,19 @@
+# Packer Specifics:
+export PACKER_LOG_PATH="./packer.log"
+export PACKER_LOG=1
+
+# Instance Specifics:
+export ssh_username="ubuntu"
+
+# Versions:
+export version_docker="18.06.2~ce~3-0~ubuntu"
+
+# AWS Specifics:
+export aws_access_key=""
+export aws_secret_key=""
+export vpc_region=""
+export vpc_id=""
+export vpc_public_sn_id=""
+export vpc_public_sg_id=""
+export source_ami=""
+export instance_type=""

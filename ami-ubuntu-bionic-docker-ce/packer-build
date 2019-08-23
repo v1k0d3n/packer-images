@@ -1,0 +1,11 @@
+#!/bin/sh
+source .packer
+
+# Builds Ubuntu Docker CE AMI
+set -e
+
+echo " "
+echo "*** Provisioning Docker CE AMI ***"
+
+packer build -color=false ubuntu-bionic-docker-ce.json
+
