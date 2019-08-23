@@ -19,7 +19,7 @@ sudo add-apt-repository \
 sudo apt-get update && \
   sudo apt-get install -y docker-ce="18.06.2~ce~3-0~ubuntu"
 
-## Setup Docker daemon:
+## Setup Docker customized daemon (TODO: Make parameterized beyond Kubernetes):
 cat << EOF | sudo tee /etc/docker/daemon.json
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
@@ -33,6 +33,14 @@ EOF
 
 sudo mkdir -p /etc/systemd/system/docker.service.d
 
-# Restart docker:
+# Add Docker permissions (TODO: Make parameterized):
+sudo groupadd docker
+sudo usermod -aG docker ubuntu
+
+# Enable the Docker service:
 sudo systemctl daemon-reload
 sudo systemctl restart docker
+sudo systemctl enable docker
+
+# Print the Docker version:
+docker --version
