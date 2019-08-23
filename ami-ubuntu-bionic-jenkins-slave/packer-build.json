@@ -3,9 +3,10 @@
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "us_east_1_ami": "ami-07d0cf3af28718ef8",
-    "name": "test-docker-ce-base",
-    "us_east_1_name": "ubuntu-bionic-docker-ce-base",
-    "ssh_username": "ubuntu"
+    "name": "test-jenkins-slave",
+    "us_east_1_name": "ubuntu-bionic-jenkins-slave",
+    "ssh_username": "ubuntu",
+    "volume_size": "{{env `volume_size`}}"
   },
   "builders": [
     {
@@ -17,7 +18,7 @@
       "vpc_id": "",
       "subnet_id": "",
       "source_ami": "{{user `us_east_1_ami`}}",
-      "instance_type": "t2.micro",
+      "instance_type": "t3.xlarge",
       "ssh_username": "{{user `ssh_username`}}",
       "ssh_timeout": "5m",
       "ami_name": "{{user `us_east_1_name`}} {{timestamp}}",
@@ -28,14 +29,22 @@
       "tags": {
         "ami": "{{user `us_east_1_name`}}"
       },
-      "associate_public_ip_address": true
+      "associate_public_ip_address": true,
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "volume_size": "{{user `volume_size`}}",
+          "delete_on_termination": true
+        }
+      ]
     }
   ],
   "provisioners": [
     {
       "type": "file",
-      "source": "install-docker-ce",
-      "destination": "/tmp/install-docker-ce"
+      "source": "install",
+      "destination": "/tmp/install"
     },
     {
           "type": "file",
@@ -48,14 +57,13 @@
       "inline": [
         "whoami",
         "cd /tmp",
-        "chmod +x install-docker-ce",
+        "chmod +x install",
         "chmod +x packer-clean",
         "ls -alh /tmp",
-        "./install-docker-ce",
+        "./install",
         "sleep 10",
         "./packer-clean"
       ]
     }
   ]
 }
-

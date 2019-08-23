@@ -6,4 +6,4 @@ set -e
 echo " "
 echo "*** Provisioning Requested AMI ***"
 
-packer build -color=false packer-build.json 
+packer build -color=false packer-build.json

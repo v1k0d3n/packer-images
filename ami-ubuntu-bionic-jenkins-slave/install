@@ -1,0 +1,39 @@
+#!/bin/bash
+VERSION_PACKER="1.4.3"
+
+# Install Jenkins Slave
+## Set up the repository:
+sudo apt-get update && \
+  sudo apt-get upgrade -y && \
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+## Add PPA for OpenJDK:
+sudo add-apt-repository ppa:openjdk-r/ppa -y
+
+## Install OpenJDK:
+sudo apt install openjdk-8-jdk -y
+
+## Report verion:
+java -version
+
+## Add jenkins user to the system (w/no login access):
+sudo sh -c 'echo "/sbin/nologin" >>/etc/shells'
+sudo groupadd jenkins
+sudo useradd -m -u 9999 -s /sbin/nologin -g jenkins jenkins
+
+################### ADD-ONS ###################
+
+# Install other prerequisites build packages: Packer
+## Install prerequisites:
+sudo apt-get install -y unzip
+
+## Fetch packer binary:
+curl -o /tmp/packer_${VERSION_PACKER}_linux_amd64.zip https://releases.hashicorp.com/packer/${VERSION_PACKER}/packer_${VERSION_PACKER}_linux_amd64.zip
+
+## Explode, and load packer binary:
+unzip /tmp/packer_${VERSION_PACKER}_linux_amd64.zip -d /tmp/
+sudo mv packer /usr/local/bin/packer
+sudo chown root:root /usr/local/bin/packer
+
+## Report verion:
+packer -version
