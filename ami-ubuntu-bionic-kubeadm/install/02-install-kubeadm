@@ -21,3 +21,6 @@ sudo apt-mark hold kubeadm kubectl kubelet
 ## Post-Installation configuration: kubeadm (turn off swap)
 sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+## Preload the Kubernetes images:
+sudo kubeadm config images pull --kubernetes-version="${version_kube}" -v=4

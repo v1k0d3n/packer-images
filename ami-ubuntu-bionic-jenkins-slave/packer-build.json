@@ -43,13 +43,18 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "install",
-      "destination": "/tmp/install"
+      "source": ".packer",
+      "destination": "/tmp/.packer"
     },
     {
-          "type": "file",
-          "source": "packer-clean",
-          "destination": "/tmp/packer-clean"
+      "type": "file",
+      "source": "./install/01-install-jenkins-slave",
+      "destination": "/tmp/.packer-install-jenkins-slave"
+    },
+    {
+      "type": "file",
+      "source": "packer-clean",
+      "destination": "/tmp/.packer-clean"
     },
     {
       "type": "shell",
@@ -57,12 +62,12 @@
       "inline": [
         "whoami",
         "cd /tmp",
-        "chmod +x install",
-        "chmod +x packer-clean",
+        "chmod +x .packer-install-jenkins-slave",
+        "chmod +x .packer-clean",
         "ls -alh /tmp",
-        "./install",
+        "./.packer-install-jenkins-slave",
         "sleep 10",
-        "./packer-clean"
+        "./.packer-clean"
       ]
     }
   ]
