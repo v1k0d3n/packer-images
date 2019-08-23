@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+source .packer
+
+# Install Docker CE
+## Set up the repository:
+sudo apt-get update && \
+  sudo apt-get upgrade -y && \
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+## Add Docker’s official GPG key:
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+## Add Docker apt repo:
+sudo add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable"
+
+## Install Docker CE:
+sudo apt-get update && \
+  sudo apt-get install -y docker-ce="${version_docker}"
+
+## Setup Docker customized daemon (TODO: Make parameterized beyond Kubernetes):
+cat << EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+sudo mkdir -p /etc/systemd/system/docker.service.d
+
+# Add Docker permissions (TODO: Make parameterized):
+sudo groupadd docker
+sudo usermod -aG docker ubuntu
+
+# Enable the Docker service:
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+sudo systemctl enable docker
+
+# Print the Docker version:
+docker --version

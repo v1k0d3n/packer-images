@@ -1,0 +1,81 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "us_east_1_ami": "ami-07d0cf3af28718ef8",
+    "name": "test-kubeadm",
+    "us_east_1_name": "ubuntu-bionic-kubeadm",
+    "ssh_username": "ubuntu",
+    "volume_size": "{{env `volume_size`}}"
+  },
+  "builders": [
+    {
+      "name": "{{user `us_east_1_name`}}",
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-1",
+      "vpc_id": "",
+      "subnet_id": "",
+      "source_ami": "{{user `us_east_1_ami`}}",
+      "instance_type": "t3.xlarge",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_timeout": "5m",
+      "ami_name": "{{user `us_east_1_name`}} {{timestamp}}",
+      "ami_description": "{{user `us_east_1_name`}} AMI",
+      "run_tags": {
+        "ami-create": "{{user `us_east_1_name`}}"
+      },
+      "tags": {
+        "ami": "{{user `us_east_1_name`}}"
+      },
+      "associate_public_ip_address": true,
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "volume_size": "{{user `volume_size`}}",
+          "delete_on_termination": true
+        }
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": ".packer",
+      "destination": "/tmp/.packer"
+    },
+    {
+      "type": "file",
+      "source": "./install/01-install-docker",
+      "destination": "/tmp/.packer-install-docker"
+    },
+    {
+      "type": "file",
+      "source": "./install/02-install-kubeadm",
+      "destination": "/tmp/.packer-install-kubeadm"
+    },
+    {
+      "type": "file",
+      "source": "packer-clean",
+      "destination": "/tmp/.packer-clean"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+        "whoami",
+        "cd /tmp",
+        "chmod +x .packer-install-docker",
+        "chmod +x .packer-install-kubeadm",
+        "chmod +x .packer-clean",
+        "ls -alh /tmp",
+        "./.packer-install-docker",
+        "./.packer-install-kubeadm",
+        "sleep 10",
+        "./.packer-clean"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+source .packer
+
+# Install Kubeadm (Upstream)
+## Add GPG key: Kubeadm
+#curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+wget --quiet --output-document=- "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | sudo apt-key add -
+
+## Add apt repository: Kubeadm
+sudo touch /etc/apt/sources.list.d/packer-kubernetes.list
+sudo bash -c "echo 'deb https://apt.kubernetes.io/ kubernetes-xenial main' > /etc/apt/sources.list.d/packer-kubernetes.list"
+sudo apt-get update
+
+## Install package: Kubeadm
+sudo apt-get update
+sudo apt-get install -y kubelet="${version_kube_pkg}" kubeadm="${version_kube_pkg}" kubectl="${version_kube_pkg}"
+
+## Hold packages: kubeadm, kubectl, kubelet
+sudo apt-mark hold kubeadm kubectl kubelet
+
+## Post-Installation configuration: kubeadm (turn off swap)
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
