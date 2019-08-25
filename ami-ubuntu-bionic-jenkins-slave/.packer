@@ -6,7 +6,11 @@ export PACKER_LOG=1
 export ssh_username="ubuntu"
 
 # Versions:
+export version_ansible="2.3.3.0"
 export version_docker="18.06.2~ce~3-0~ubuntu"
+export version_kube="v1.14.3"
+export version_kube_pkg="1.14.3-00"
+export version_packer="1.4.3"
 
 # AWS Specifics:
 export aws_access_key=""

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+source .packer
+
+# Install Ansible (Source: pip)
+## Update system:
+sudo apt-get update && \
+  sudo apt-get upgrade -y
+
+## Install prerequisites:
+sudo apt-get install -y \
+  python-pip \
+  python-dev
+
+## Add Docker’s official GPG key:
+sudo -H pip install ansible==2.3.3.0
+
+# Summary:
+ansible --version

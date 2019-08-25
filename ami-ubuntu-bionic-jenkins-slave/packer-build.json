@@ -48,8 +48,28 @@
     },
     {
       "type": "file",
-      "source": "./install/01-install-jenkins-slave",
+      "source": "./install/jenkins-slave",
       "destination": "/tmp/.packer-install-jenkins-slave"
+    },
+    {
+      "type": "file",
+      "source": "./install/packer",
+      "destination": "/tmp/.packer-install-packer"
+    },
+    {
+      "type": "file",
+      "source": "./install/ansible",
+      "destination": "/tmp/.packer-install-ansible"
+    },
+    {
+      "type": "file",
+      "source": "./install/docker-ce",
+      "destination": "/tmp/.packer-install-docker-ce"
+    },
+    {
+      "type": "file",
+      "source": "./install/kubeadm",
+      "destination": "/tmp/.packer-install-kubeadm"
     },
     {
       "type": "file",
@@ -62,10 +82,13 @@
       "inline": [
         "whoami",
         "cd /tmp",
-        "chmod +x .packer-install-jenkins-slave",
-        "chmod +x .packer-clean",
+        "chmod +x .packer-*",
         "ls -alh /tmp",
         "./.packer-install-jenkins-slave",
+        "./.packer-install-packer",
+        "./.packer-install-docker-ce",
+        "./.packer-install-kubeadm",
+        "./.packer-install-ansible",
         "sleep 10",
         "./.packer-clean"
       ]
